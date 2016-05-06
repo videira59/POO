@@ -1,0 +1,22 @@
+#BlueJ class context
+comment0.params=
+comment0.target=Consulta()
+comment1.params=c
+comment1.target=Consulta(Consulta)
+comment2.params=email\ data
+comment2.target=Consulta(java.lang.String,\ java.util.GregorianCalendar)
+comment3.params=
+comment3.target=java.lang.String\ getEmail()
+comment4.params=email
+comment4.target=void\ setEmail(java.lang.String)
+comment5.params=
+comment5.target=java.util.GregorianCalendar\ getData()
+comment6.params=data
+comment6.target=void\ getData(java.util.GregorianCalendar)
+comment7.params=
+comment7.target=Consulta\ clone()
+comment8.params=obj
+comment8.target=boolean\ equals(java.lang.Object)
+comment9.params=
+comment9.target=java.lang.String\ toString()
+numComments=10

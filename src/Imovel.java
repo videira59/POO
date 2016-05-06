@@ -1,5 +1,7 @@
 import java.util.List;
 import java.util.ArrayList;
+
+import static java.util.stream.Collectors.toList;
 /**
  * Write a description of class Imovel here.
  *
@@ -22,10 +24,14 @@ public abstract class Imovel{
     /** Lista de todas as consultas*/
     private List<Consulta> consultas;
 
-    areaT = precoP = precoP =  0;
+    /** Estado do imóvel (venda ou vendido) */
+    private Estado estado;
+
+
     public Imovel () {
+        areaT = precoP = precoP =  0;
         rua = "n/a";
-        consultas = new ArrayList<Consultas> ();
+        consultas = new ArrayList<Consulta> ();
     }
 
     public Imovel (Imovel i){
@@ -33,10 +39,10 @@ public abstract class Imovel{
         this.rua = i.getRua ();
         this.precoP = i.getPrecoP ();
         this.precoM = i.getPrecoM ();
-        this.consultas = i.getConsultas().stream().map(i-> {return i.clone();}).collect(Collectors.toSet());
+        this.consultas = i.getConsultas().stream().map(a-> {return a.clone();}).collect(Collectors.toList());
     }
 
-    public Imovel (double areaT,String rua,double precoP,double precoM,List<Consultas> consultas){
+    public Imovel (double areaT,String rua,double precoP,double precoM,List<Consulta> consultas){
         this.areaT = areaT;
         this.rua = rua;
         this.precoP = precoP;

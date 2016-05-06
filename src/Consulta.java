@@ -1,4 +1,4 @@
-import java.util.GregorianCalender;
+import java.util.GregorianCalendar;
 
 public class Consulta{
 
@@ -6,11 +6,11 @@ public class Consulta{
   private String email;
 
   /** Data da consulta*/
-  private GregorianCalender data;
+  private GregorianCalendar data;
 
   public Consulta (){
     email = "n/a";
-    data = GregorianCalender();
+    data = new GregorianCalendar();
   }
 
   public Consulta (Consulta c){
@@ -18,7 +18,7 @@ public class Consulta{
     this.data = c.getData();
   }
 
-  public Consulta (String email,GregorianCalender data){
+  public Consulta (String email,GregorianCalendar data){
     this.email = email;
     this.data = data;
   }
@@ -31,11 +31,11 @@ public class Consulta{
     this.email = email;
   }
 
-  public GregorianCalender getData(){
+  public GregorianCalendar getData(){
     return data;
   }
 
-  public void getData (GregorianCalender data){
+  public void getData (GregorianCalendar data){
     this.data = data;
   }
 
@@ -57,5 +57,6 @@ public class Consulta{
     StringBuilder sb = new StringBuilder();
     sb.append("O email da consulta é:").append(email).append("\n");
     sb.append("A data da consulta é:").append(data).append("\n");
-  }
+    return sb.toString();
+  }   
 }

@@ -6,7 +6,7 @@ import java.util.Set;
  * @author (your name)
  * @version (a version number or a date)
  */
-public  class Comprador extends Utilizador{
+public class Comprador extends Utilizador{
     private TreeSet<Imovel> favoritos;
 
     public Comprador (){
