@@ -25,13 +25,14 @@ public abstract class Imovel{
     private List<Consulta> consultas;
 
     /** Estado do imóvel (venda ou vendido) */
-    private Estado estado;
+    private String estado;
 
 
     public Imovel () {
         areaT = precoP = precoP =  0;
         rua = "n/a";
         consultas = new ArrayList<Consulta> ();
+        estado = "n/a"
     }
 
     public Imovel (Imovel i){
@@ -40,14 +41,16 @@ public abstract class Imovel{
         this.precoP = i.getPrecoP ();
         this.precoM = i.getPrecoM ();
         this.consultas = i.getConsultas().stream().map(a-> {return a.clone();}).collect(Collectors.toList());
+        this.estado = i.getEstado();
     }
 
-    public Imovel (double areaT,String rua,double precoP,double precoM,List<Consulta> consultas){
+    public Imovel (double areaT,String rua,double precoP,double precoM,List<Consulta> consultas,String estado){
         this.areaT = areaT;
         this.rua = rua;
         this.precoP = precoP;
         this.precoM = precoM;
         this.consultas = consultas.stream().map(i-> {return i.clone();}).collect(Collectors.toSet());
+        this.estado = estado
     }
 
     public double getAreaT () {
@@ -90,6 +93,13 @@ public abstract class Imovel{
       this.consultas = consultas.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
     }
 
+    public String getEstado (){
+      return estado;
+    }
+
+    public void setEstado(String estado){
+      this.estado = estado;
+    }
     public abstract Imovel clone ();
 
     public boolean equals (Object obj){

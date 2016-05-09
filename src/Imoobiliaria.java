@@ -21,8 +21,8 @@ public class Imoobiliaria{
 
   public Imoobiliaria (){
     utilizador = null;
-    imoveis = new TreeMap<String,Imovel> ();
-    utilizadores = new TreeSet<Utilizador> ();
+    imoveis = new TreeMap<String,Imovel>(ComparadorIdImovel()); // veruficar se comparador esta correto
+    utilizadores = new TreeSet<Utilizador>();
   }
 
   public Imoobiliaria (Imoobiliaria i){
@@ -127,11 +127,17 @@ public class Imoobiliaria{
   @param im imovel a adicionar*/
   public void registaImovel (Imovel im)
   throws ImovelExisteException, SemAutorizacaoException{
+    int tamanho;
+    String idImovel;
     if (utilizador == null)
       throw new SemAutorizacaoException("Inicie Sessão.");
     if (imoveis.containsValue(im))
       throw new ImovelExisteException("Imovel já existente");
-    imoveis.add(im);
+    // verificar o tamanho do map e o ID do imovel passa a +1 (converter para string)
+    tamanho = imoveis.size();
+    tamanho ++;
+    idImovel = Integer.toString(tamanho);
+    imoveis.put(idImovel,im); // add o comparador
   }
 
   /** Função que devolve ao utilizador a lista das 10 ultimas consultas dos imoveis que este tem para venda
@@ -150,11 +156,14 @@ public class Imoobiliaria{
   @param estado Estado para o qual o imovel vai mudar*/
   public void setEstado (String idImovel, String estado)
   throws ImovelInexistenteException,SemAutorizacaoException,EstadoInvalidoException{
+    Imovel i = imoveis.get(idImovel);
     if (utilizador == null)
       throw new SemAutorizacaoException("Inicie sessão.");
-    if (!imoveis.containsKey(idImovel))
+    if (i == null)
       throw new ImovelInexistenteException("O imóvel não existe no sistema!");
-
+    if (!estado.compareTo("Venda") || !estado.compareTo("Vendido"))
+      throw new EstadoInvalidoException("O estado introduzido não é válido.");
+    i.setEstado(estado);
 
   }
 
@@ -196,10 +205,13 @@ public class Imoobiliaria{
   @param idImovel Id do imóvel a ser adicionado aos favoritos  */
   public void setFavoritos(String idImovel)
   throws ImovelInexistenteException, SemAutorizacaoException{
+    Imovel u = imoveis.get(idImovel);
     if (utilizador == null)
       throw new SemAutorizacaoException("Inicie sessão.");
-    if (!imoveis.contains(idImovel))
+    if (u == null)
       throw new ImovelInexistenteException("Imovel não existe");
+    utilizador.setFavoritos // mudar
+
   }
 
   /** Função que devolve um set com os favoritos do utilizador
