@@ -31,10 +31,11 @@ public class Imoobiliaria{
     this.utilizadores = i.getUtilizadores().stream().map(i->{return i.clone();}).collect(Collectors.toSet());
   }
 
-  public Imoobiliaria (Utilizador utilizador,Map<String,Imovel> imoveis, TreeSet<Utilizador> utilizadores){
+  public Imoobiliaria (Utilizador utilizador,Map<String,Imovel> imoveis, Set<Utilizador> utilizadores){
     this.utilizador = utilizador;
-    this.imoveis = new TreeSet<Imovel> (imoveis);
+    this.imoveis = new TreeMap<String,Imovel> (imoveis);
     this.utilizadores = utilizadores.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
+    setImoveis(imoveis);
   }
 
   public Utilizador getUtilizador (){
@@ -172,8 +173,17 @@ public class Imoobiliaria{
   @param n numero de ids a serem devolvidos
   @return Conjunto dos ids*/
   public Set<String> getTopImoveis (int n){
+    int i;
+    TreeSet<String> lista = new TreeSet<String>();
+    TreeSet<String,Imovel> imoveisUti = new utilizador.getPortfolio();
+    String id,idImovel;
+    for(Map.Entry<String,Imovel> entry: imoveisUti.entrySet()){
+      //guardar o idString segundo o ComparadorConsultas (vai a cada idString buscar o imovel e compara o numero de consultas)
 
-  }
+    }
+    return new TreeSet<String>(lista);
+    }
+
 /* Funções para todos os utilizadores*/
   /** Função que devolve todos os imoveis de um dado tipo e até um dado preço
 
