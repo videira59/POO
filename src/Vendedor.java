@@ -8,41 +8,51 @@ import java.util.Set;
  */
 public class Vendedor extends Utilizador
 {
-  private Set<Imovel> historico;
-  private Set<Imovel> portfolio;
+  private Map<String,Imovel> historico;
+  private Map<String,Imovel> portfolio;
 
   public Vendedor (){
     super("n/a","n/a","n/a","n/a","n/a");
-    historico = new TreeSet<Imovel> ();
-    portfolio = new TreeSet<Imovel> ();
+    historico = new TreeMap<String,Imovel> ();
+    portfolio = new TreeMap<String,Imovel> ();
   }
 
-  public Vendedor (String email,String nome,String password,String morada,String data,Set<Imovel> historico,Set<Imovel> portfolio){
+  public Vendedor (String email,String nome,String password,String morada,String data,Map<String,Imovel> historico,Map<String,Imovel> portfolio){
     super(email,nome,password,morada,data);
-    this.historico = historico.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
-    this.portfolio = portfolio.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
+    this.historico = new TreeSet<String,Imovel>(historico);
+    this.portfolio = new TreeSet<String,Imovel>(portfolio);
+    setHistorico(historico);
+    setPortfolio(portfolio);
   }
 
   public Vendedor (Vendedor v){
     super(v);
-    this.historico = v.getHistorico.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
-    this.portfolio = v.getPortfolio.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
+    this.historico = v.getHistorico();
+    this.portfolio = v.getPortfolio();
   }
 
-  public Set<Imovel> getHistorico (){
-    return historico.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
+  public Map<String,Imovel> getHistorico (){
+    return this.historico.entrySet()
+                         .stream()
+                         .collect(toMap(e->e.getKey(),e->e.getValue().clone()));
   }
 
   public void setHistorico (Set<Imovel> historico){
-    this.historico = historico.stream().map(i-> {return i.clone();}).collect(Collectors.toSet());
+    this.historico.entrySet()
+                  .stream()
+                  .collect(toMap(e->e.getKey(),e->e.getValue().clone()));
   }
 
   public Set<Imovel> getPortfolio(){
-    return portfolio.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
+    return this.portfolio.entrySet()
+                         .stream()
+                         .collect(toMap(e->e.getKey(),e->e.getValue().clone()));
   }
 
   public void setPortfolio (Set<Imovel> portfolio){
-    this.portfolio = portfolio.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
+    this.portfolio.entrySet()
+                         .stream()
+                         .collect(toMap(e->e.getKey(),e->e.getValue().clone()));
   }
 
   public Vendedor clone (){
