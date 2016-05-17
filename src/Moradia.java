@@ -1,12 +1,12 @@
-
+import java.util.List;
 /**
  * Write a description of class Moradia here.
  *
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Moradia extends Imovel
-{
+public class Moradia extends Imovel implements Habitavel{
+
      private String tipo;
      private double areaI;
      private double areaE;
@@ -24,8 +24,8 @@ public class Moradia extends Imovel
 		 porta = 0;
 	 }
 
-	 public Moradia (String tipo,double areaI,double areaE,int quartos,int wc, int porta,double areaT,String rua,double precoP,double precoM){
-		 super (areaT,rua,precoP,precoM);
+	 public Moradia (String tipo,double areaI,double areaE,int quartos,int wc, int porta,double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado){
+		 super (areaT,rua,precoP,precoM,consultas,estado);
 		 this.tipo = tipo;
 		 this.areaI = areaI;
 		 this.areaE = areaE;

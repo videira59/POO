@@ -1,4 +1,4 @@
-
+import java.util.List;
 /**
  * Write a description of class Terreno here.
  *
@@ -28,8 +28,8 @@ public class Terreno extends Imovel
 		this.esgotos = t.getEsgotos();
 	}
 
-	public Terreno (String tipoConstrucao,double canalizacao,double eletricidade,boolean esgotos,double areaT,String rua,double precoP,double precoM){
-		super (areaT,rua,precoP,precoM);
+	public Terreno (String tipoConstrucao,double canalizacao,double eletricidade,boolean esgotos,double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado){
+		super (areaT,rua,precoP,precoM,consultas,estado);
 		this.tipoConstrucao = tipoConstrucao;
 		this.canalizacao = canalizacao;
 		this.eletricidade = eletricidade;

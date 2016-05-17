@@ -1,5 +1,6 @@
-import java.util.TreeSet;
-import java.util.Set;
+import java.util.TreeMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 /**
  * Write a description of class Comprador here.
  *
@@ -7,29 +8,34 @@ import java.util.Set;
  * @version (a version number or a date)
  */
 public class Comprador extends Utilizador{
-    private TreeSet<Imovel> favoritos;
+    private TreeMap<String,Imovel> favoritos;
 
     public Comprador (){
       super ("n/a","n/a","n/a","n/a","n/a");
-      favoritos = new TreeSet<Imovel> ();
+      favoritos = new TreeMap<String,Imovel> ();
     }
 
     public Comprador (Comprador c){
       super (c);
-      this.favoritos = c.getFavoritos.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
+      this.favoritos = (TreeMap<String,Imovel>)c.getFavoritos();
     }
 
-    public Comprador (String email,String nome,String password,String morada,String dataNascimento,Set<Imovel> favoritos){
+    public Comprador (String email,String nome,String password,String morada,String dataNascimento,Map<String,Imovel> favoritos){
       super (email,nome,password,morada,dataNascimento);
-      this.favoritos = favoritos.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
+      this.favoritos = new TreeMap<String,Imovel> (favoritos);
+      setFavoritos(favoritos);
     }
 
-    public Set<Imovel> getFavoritos (){
-      return favoritos.stream().map(i->{return i.clone ();}).collect(Collectors.toSet());
+    public Map<String,Imovel> getFavoritos (){
+      return this.favoritos.entrySet()
+                           .stream()
+                           .collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
     }
 
-    public void setFavoritos (Set<Imovel> favoritos){
-      this.favoritos = favoritos.stream().map(i-> {return i.clone();}).collect(Collectors.toSet());
+    public void setFavoritos (Map<String,Imovel> favoritos){
+      this.favoritos.entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
     }
 
     public Comprador clone (){
@@ -48,5 +54,6 @@ public class Comprador extends Utilizador{
     public String toString (){
       StringBuilder sb = new StringBuilder();
       sb.append("A lista de favoritos é:(").append(favoritos).append(")\n");
+      return sb.toString();
     }
 }

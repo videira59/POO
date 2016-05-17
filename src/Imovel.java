@@ -1,7 +1,6 @@
 import java.util.List;
 import java.util.ArrayList;
-
-import static java.util.stream.Collectors.toList;
+import java.util.stream.Collectors;
 /**
  * Write a description of class Imovel here.
  *
@@ -16,10 +15,10 @@ public abstract class Imovel{
     private String rua;
 
     /** Preço pedido pelo imovel */
-    private double precoP;
+    private int precoP;
 
     /** Preço minimo aceitado pelo vendedor */
-    protected double precoM;
+    protected int precoM;
 
     /** Lista de todas as consultas*/
     private List<Consulta> consultas;
@@ -32,7 +31,7 @@ public abstract class Imovel{
         areaT = precoP = precoP =  0;
         rua = "n/a";
         consultas = new ArrayList<Consulta> ();
-        estado = "n/a"
+        estado = "n/a";
     }
 
     public Imovel (Imovel i){
@@ -44,13 +43,13 @@ public abstract class Imovel{
         this.estado = i.getEstado();
     }
 
-    public Imovel (double areaT,String rua,double precoP,double precoM,List<Consulta> consultas,String estado){
+    public Imovel (double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado){
         this.areaT = areaT;
         this.rua = rua;
         this.precoP = precoP;
         this.precoM = precoM;
-        this.consultas = consultas.stream().map(i-> {return i.clone();}).collect(Collectors.toSet());
-        this.estado = estado
+        this.consultas = consultas.stream().map(i-> {return i.clone();}).collect(Collectors.toList());
+        this.estado = estado;
     }
 
     public double getAreaT () {
@@ -69,7 +68,7 @@ public abstract class Imovel{
         this.rua = rua;
     }
 
-    public double getPrecoP (){
+    public int getPrecoP (){
         return precoP;
     }
 
@@ -77,7 +76,7 @@ public abstract class Imovel{
         this.precoP = precoP;
     }
 
-    public double getPrecoM (){
+    public int getPrecoM (){
         return precoM;
     }
 
@@ -86,11 +85,11 @@ public abstract class Imovel{
     }
 
     public List<Consulta> getConsultas (){
-      return consultas.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
+      return consultas.stream().map(i->{return i.clone();}).collect(Collectors.toList());
     }
 
     public void setConsultas (List<Consulta> consultas){
-      this.consultas = consultas.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
+      this.consultas = consultas.stream().map(i->{return i.clone();}).collect(Collectors.toList());
     }
 
     public String getEstado (){

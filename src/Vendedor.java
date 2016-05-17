@@ -1,5 +1,6 @@
-import java.util.TreeSet;
-import java.util.Set;
+import java.util.TreeMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 /**
  * Write a description of class Vendedor here.
  *
@@ -19,8 +20,8 @@ public class Vendedor extends Utilizador
 
   public Vendedor (String email,String nome,String password,String morada,String data,Map<String,Imovel> historico,Map<String,Imovel> portfolio){
     super(email,nome,password,morada,data);
-    this.historico = new TreeSet<String,Imovel>(historico);
-    this.portfolio = new TreeSet<String,Imovel>(portfolio);
+    this.historico = new TreeMap<String,Imovel>(historico);
+    this.portfolio = new TreeMap<String,Imovel>(portfolio);
     setHistorico(historico);
     setPortfolio(portfolio);
   }
@@ -34,25 +35,25 @@ public class Vendedor extends Utilizador
   public Map<String,Imovel> getHistorico (){
     return this.historico.entrySet()
                          .stream()
-                         .collect(toMap(e->e.getKey(),e->e.getValue().clone()));
+                         .collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
   }
 
-  public void setHistorico (Set<Imovel> historico){
+  public void setHistorico (Map<String,Imovel> historico){
     this.historico.entrySet()
                   .stream()
-                  .collect(toMap(e->e.getKey(),e->e.getValue().clone()));
+                  .collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
   }
 
-  public Set<Imovel> getPortfolio(){
+  public Map<String,Imovel> getPortfolio(){
     return this.portfolio.entrySet()
                          .stream()
-                         .collect(toMap(e->e.getKey(),e->e.getValue().clone()));
+                         .collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
   }
 
-  public void setPortfolio (Set<Imovel> portfolio){
+  public void setPortfolio (Map<String,Imovel> portfolio){
     this.portfolio.entrySet()
                          .stream()
-                         .collect(toMap(e->e.getKey(),e->e.getValue().clone()));
+                         .collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
   }
 
   public Vendedor clone (){
@@ -73,5 +74,6 @@ public class Vendedor extends Utilizador
     StringBuilder sb = new StringBuilder();
     sb.append("O portfolio de imoveis é:").append(portfolio).append(")\n");
     sb.append("O historico de vendas é:").append(historico).append(")\n");
+    return sb.toString();
   }
 }

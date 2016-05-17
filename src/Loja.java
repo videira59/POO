@@ -1,3 +1,4 @@
+import java.util.List;
 /**
  * Write a description of class Loja here.
  *
@@ -15,20 +16,11 @@ public class Loja extends Imovel
    /** Número da porta da loja */
    private int porta;
 
-   /** Indica se a loja em questao contem espaço para habitação */
-   private boolean habitacao;
-
-   /** Caso a loja tenha habitacao, a informacao é aqui guardada */
-   private Apartamento apartamento;
-
-
    public Loja (){
        super ();
        wc = false;
        tipoNegocio = "n/a";
        porta = 0;
-       habitacao = false;
-       apartamento = null;
    }
 
    public Loja (Loja l){
@@ -36,17 +28,13 @@ public class Loja extends Imovel
        this.wc = l.existeWC();
        this.tipoNegocio = l.getTipoNegocio();
        this.porta = l.getNumPorta ();
-       this.habitacao = l.existeHabitacao ();
-       this.apartamento = l.getApartamento ();
    }
 
-   public Loja (double areaT,boolean wc,String tipoNegocio,int porta,boolean habitacao,Apartamento apartamento,String rua,double precoP,double precoM){
-         super (areaT,rua,precoP,precoM);
+   public Loja (boolean wc,String tipoNegocio,int porta,double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado){
+         super (areaT,rua,precoP,precoM,consultas,estado);
          this.wc = wc;
          this.tipoNegocio = tipoNegocio;
          this.porta = porta;
-         this.habitacao = habitacao;
-         this.apartamento = apartamento;
    }
 
    public boolean existeWC (){
@@ -73,22 +61,6 @@ public class Loja extends Imovel
          this.porta = porta;
    }
 
-   public boolean existeHabitacao (){
-       return habitacao;
-   }
-
-   public void setExisteHabitacao (boolean habitacao){
-         this.habitacao = habitacao;
-   }
-
-   public Apartamento getApartamento (){
-         return apartamento;
-   }
-
-   public void setApartamento (Apartamento apartamento){
-      this.apartamento = apartamento;
-   }
-
    public Loja clone (){
        return new Loja(this);
    }
@@ -103,10 +75,8 @@ public class Loja extends Imovel
      Loja l = (Loja) obj;
      return l.existeWC() == wc
      && l.getTipoNegocio ().equals(tipoNegocio)
-     && l.getNumPorta() == porta
-     && l.existeHabitacao() == habitacao
-     && l.getApartamento().equals(apartamento);
-   }
+     && l.getNumPorta() == porta;
+     }
 
    public String toString (){
      StringBuilder sb = new StringBuilder();
@@ -114,9 +84,6 @@ public class Loja extends Imovel
      else sb.append("Existe casa de banho?: Não\n");
      sb.append("O tipo de Negócio é:(").append(tipoNegocio).append(")\n");
      sb.append("O número da porta é:(").append(porta).append(")\n");
-     if (existeHabitacao()) sb.append("Existe habitação na loja?: Sim\n");
-     else sb.append("Existe habitação na loja?: Não \n");
-     sb.append("Habitação: (").append(apartamento.toString()).append(")\n");
      return sb.toString();
    }
 }

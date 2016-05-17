@@ -1,11 +1,12 @@
+import java.util.List;
 /**
  * Write a description of class Apartamento here.
  *
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Apartamento extends Imovel
-{
+public class Apartamento extends Imovel implements Habitavel{
+
    private String tipo;
    private int quartos;
    private int wc;
@@ -23,8 +24,8 @@ public class Apartamento extends Imovel
 	   garagem = false;
    }
 
-   public Apartamento (String tipo,int quartos,int wc,int porta,int andar,boolean garagem, double areaT,String rua,double precoP,double precoM){
-	   super (areaT,rua,precoP,precoM);
+   public Apartamento (String tipo,int quartos,int wc,int porta,int andar,boolean garagem, double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado){
+	   super (areaT,rua,precoP,precoM,consultas,estado);
 	   this.tipo = tipo;
 	   this.quartos = quartos;
 	   this.wc = wc;
