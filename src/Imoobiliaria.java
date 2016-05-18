@@ -1,16 +1,14 @@
-import java.util.TreeSet;
-import java.util.Set;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.List;
+import java.util.*;
+import java.io.*;
 import java.util.stream.Collectors;
+import java.io.Serializable;
 /**
  * Write a description of class Imoobiliaria here.
  *
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Imoobiliaria{
+public class Imoobiliaria implements Serializable{
   /** Utilizador que está registado no momento */
   private Utilizador utilizador;
 
@@ -18,25 +16,34 @@ public class Imoobiliaria{
   private Map<String,Imovel> imoveis;
 
   /** Set com todos os utilizadores do programa */
-  private Set<Utilizador> utilizadores;
+  private Map<String,Utilizador> utilizadores;
 
   public Imoobiliaria (){
     utilizador = null;
     imoveis = new TreeMap<String,Imovel>(new ComparadorIdImovel());
-    utilizadores = new TreeSet<Utilizador>();
+    utilizadores = new TreeMap<String,Utilizador>();
   }
 
   public Imoobiliaria (Imoobiliaria imo){
     this.utilizador = imo.getUtilizador();
     this.imoveis = imo.getImoveis();
-    this.utilizadores = imo.getUtilizadores().stream().map(i->{return i.clone();}).collect(Collectors.toSet());
+    this.utilizadores = imo.getUtilizadores();
   }
 
-  public Imoobiliaria (Utilizador utilizador,Map<String,Imovel> imoveis, Set<Utilizador> utilizadores){
+  public Imoobiliaria (Utilizador utilizador,Map<String,Imovel> imoveis, Map<String,Utilizador> utilizadores){
     this.utilizador = utilizador;
     this.imoveis = new TreeMap<String,Imovel> (imoveis);
-    this.utilizadores = utilizadores.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
+    this.utilizadores = new TreeMap<String,Utilizador> (utilizadores);
     setImoveis(imoveis);
+    setUtilizadores(utilizadores);
+  }
+
+  public int getTipoUtilizador (){
+    if (utilizador instanceof Comprador)
+      return 1;
+    if (utilizador instanceof Vendedor)
+      return 2;
+    return 0;
   }
 
   public Utilizador getUtilizador (){
@@ -58,12 +65,16 @@ public class Imoobiliaria{
                 .collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
   }
 
-  public Set<Utilizador> getUtilizadores (){
-    return new TreeSet<Utilizador> (utilizadores);
+  public Map<String,Utilizador> getUtilizadores (){
+    return this.utilizadores.entrySet()
+                            .stream()
+                            .collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
   }
 
-  public void setUtilizadores (Set<Utilizador> utilizadores){
-    this.utilizadores = new TreeSet<Utilizador> (utilizadores);
+  public void setUtilizadores (Map<String,Utilizador> utilizadores){
+    this.utilizadores.entrySet()
+                     .stream()
+                     .collect(Collectors.toMap(e->e.getKey(),e->e.getValue().clone()));
   }
 
   public Imoobiliaria clone (){
@@ -86,19 +97,24 @@ public class Imoobiliaria{
     sb.append("O utilizador registado é:").append(utilizador).append("\n");
     sb.append("A lista de utilizadores do programa é:").append(utilizadores).append("\n");
     sb.append("A lista de imoveis do programa é:").append(imoveis).append("\n");
+    return sb.toString();
   }
-  public static Imoobiliaria initApp (){
-
+  public static Imoobiliaria initApp () throws IOException, ClassNotFoundException{
+    ObjectInputStream ois = new ObjectInputStream(new FileInputStream("imoobiliaria.data"));
+    Imoobiliaria im = (Imoobiliaria) ois.readObject();
+    ois.close();
+    return im;
   }
   /** Função que adiciona um novo utilizador.
 
   @param utilizador utilizador a registar*/
   public void registarUtilizador (Utilizador utilizador)
   throws UtilizadorExistenteException{
-    if (utilizadores.contains(utilizador)) {
+    String email = utilizador.getEmail();
+    if (utilizadores.containsValue(utilizador)) {
       throw new UtilizadorExistenteException("Utilizador já existente!");
     }
-    utilizadores.add(utilizador);
+    utilizadores.put(email,utilizador);
   }
 
   /** Função que valida o acesso à aplicação.
@@ -138,6 +154,7 @@ public class Imoobiliaria{
     tamanho ++;
     idImovel = Integer.toString(tamanho);
     imoveis.put(idImovel,im); // add o comparador
+    // add imovel ao portfolio do vendedor;
   }
 
   /** Função que devolve ao utilizador a lista das 10 ultimas consultas dos imoveis que este tem para venda
@@ -145,14 +162,9 @@ public class Imoobiliaria{
   @return Lista das consultas */
   public List<Consulta> getConsulta ()
   throws SemAutorizacaoException{
-    TreeMap<String,Imovel> imoUtilizador = utilizador.getPortfolio();
-    ArrayList<Consulta> lista = new ArrayList<Consulta> (new ComparadorDataConsulta());
+    ArrayList<Consulta> lista = new ArrayList<Consulta>();
     if(utilizadores == null)
       throw new SemAutorizacaoException("Inicie Sessão.");
-    for (Map.Entry<String,Imovel> entry: imoUtilizador.entrySet()){
-      lista.addAll(entry.getValue().consultas);
-    }
-
       // add todas as consultas a uma lista
     // guardar apenas 10 primeiras
     return lista;
@@ -169,7 +181,8 @@ public class Imoobiliaria{
       throw new SemAutorizacaoException("Inicie sessão.");
     if (i == null)
       throw new ImovelInexistenteException("O imóvel não existe no sistema!");
-    if (!estado.compareTo("Venda") || !estado.compareTo("Vendido"))
+    if ((estado.compareTo("Venda")) != 0)
+    if ((estado.compareTo("Vendido")) != 0)
       throw new EstadoInvalidoException("O estado introduzido não é válido.");
     i.setEstado(estado);
   }
@@ -177,11 +190,11 @@ public class Imoobiliaria{
   /** Função que obtem o conjunto dos ids dos n imoveis mais consultados
 
   @param n numero de ids a serem devolvidos
-  @return Conjunto dos ids*/
+  @return Conjunto dos ids
   public Set<String> getTopImoveis (int n){
     int i;
     TreeSet<String> lista = new TreeSet<String>();
-    TreeMap<String,Imovel> imoveisUti = new utilizador.getPortfolio();
+    TreeMap<String,Imovel> imoveisUti = new TreeMap<String,Imovel>(utilizador.getPortfolio());
     TreeMap<Imovel,String> ord = new TreeMap<Imovel,String>(new ComparadorConsultas());
     String id,idImovel;
     for(Map.Entry<String,Imovel> entry: imoveisUti.entrySet()){
@@ -191,8 +204,8 @@ public class Imoobiliaria{
       for(Map.Entry<Imovel,String> entry:ord.entrySet())
         lista.add(entry.getValue());
     return new TreeSet<String>(lista);
-    }
-
+  }
+ */
 /* Funções para todos os utilizadores*/
   /** Função que devolve todos os imoveis de um dado tipo e até um dado preço
 
@@ -200,45 +213,44 @@ public class Imoobiliaria{
   @param preco preço máximo dos imóveis
   @return lista dos imoveis */
   public List<Imovel> getImovel (String classe, int preco){
-    Imovel imovel = new Imovel();
     ArrayList<Imovel> lista = new ArrayList<Imovel>() ;
     Consulta consulta = new Consulta(utilizador.getEmail(),new GregorianCalendar());
     for (Map.Entry<String,Imovel> entry: imoveis.entrySet()){
       if (entry.getValue().getClass().getSimpleName().equals(classe) && entry.getValue().getPrecoP() >= preco){
-        entry.getValue().consultas.add(consulta);
+        entry.getValue().getConsultas().add(consulta);
         lista.add(entry.getValue());
       }
     }
-    return lista.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
+    return lista.stream().map(i->{return i.clone();}).collect(Collectors.toList());
   }
 
   /** Função que devolve todos os imoveis habitaveis até um dado preço
 
   @param preco preço máximo dos imóveis
-  @return lista dos imóveis habitaveis */
+  @return lista dos imóveis habitaveis
   public List<Habitavel> getHabitaveis (int preco){
     ArrayList<Habitavel> lista = new ArrayList<Habitavel>();
     Consulta consulta = new Consulta(utilizador.getEmail(),new GregorianCalendar());
     for (Map.Entry<String,Imovel> entry:imoveis.entrySet()){
-      if (entry.getValue() instanceof Habitavel)
-        entry.getValue().consultas.add(consulta);
-        lista.add(entry.getValue());
+      if (entry.getValue() instanceof Habitavel && entry.getValue().getPrecoP()>= preco)
+        entry.getValue().getConsultas().add(consulta);
+        lista.add((Habitavel)entry.getValue());
     }
-    return lista.stream().map(i->{return i.clone();}).collect(Collectors.toSet());
-  }
+    return lista.stream().map(i->{return i.clone();}).collect(Collectors.toList());
+  }*/
 
   /** Função que obtem o mapeamento entre todos os imóveis e o seu vendedor
 
-  @return Mapeamento dos imóveis */
+  @return Mapeamento dos imóveis
   public Map<Imovel,Vendedor> getMapeamentoImoveis (){
     // percorrer todos os utilizadores
       // obter o portfolio
-  }
+  }*/
 
   /** Funções para compradores registados */
 
   /** Função que define um dado imovel como favoritos
-  @param idImovel Id do imóvel a ser adicionado aos favoritos  */
+  @param idImovel Id do imóvel a ser adicionado aos favoritos
   public void setFavoritos(String idImovel)
   throws ImovelInexistenteException, SemAutorizacaoException{
     Imovel u = imoveis.get(idImovel);
@@ -246,11 +258,11 @@ public class Imoobiliaria{
       throw new SemAutorizacaoException("Inicie sessão.");
     if (u == null)
       throw new ImovelInexistenteException("Imovel não existe");
-    utilizador.favoritos.add(imovel);
-  }
+    utilizador.getFavoritos().put(idImovel,u);
+  }*/
 
   /** Função que devolve um set com os favoritos do utilizador
-  @return Set com todos os imoveis favoritos*/
+  @return Set com todos os imoveis favoritos
   public Set<Imovel> getFavoritos ()
   throws SemAutorizacaoException{
     TreeSet<Imovel> set = new TreeSet<Imovel>();
@@ -263,5 +275,12 @@ public class Imoobiliaria{
       set.add(entry.getValue());
     }
     return set;
+  }*/
+
+  public void gravar() throws IOException{
+    ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("imoobiliaria.data"));
+    oos.writeObject(this);
+    oos.flush();
+    oos.close();
   }
 }
