@@ -190,22 +190,23 @@ public class Imoobiliaria implements Serializable{
   /** Função que obtem o conjunto dos ids dos n imoveis mais consultados
 
   @param n numero de ids a serem devolvidos
-  @return Conjunto dos ids
+  @return Conjunto dos ids*/
   public Set<String> getTopImoveis (int n){
     int i;
+    Vendedor v = (Vendedor) utilizador;
     TreeSet<String> lista = new TreeSet<String>();
-    TreeMap<String,Imovel> imoveisUti = new TreeMap<String,Imovel>(utilizador.getPortfolio());
+    TreeMap<String,Imovel> imoveisUti = new TreeMap<String,Imovel>(v.getPortfolio());
     TreeMap<Imovel,String> ord = new TreeMap<Imovel,String>(new ComparadorConsultas());
     String id,idImovel;
     for(Map.Entry<String,Imovel> entry: imoveisUti.entrySet()){
-      ord.add(entry.getValue(),entry.getKey());
+      ord.put(entry.getValue(),entry.getKey());
     }
     for(i=0;i<n;i++)
       for(Map.Entry<Imovel,String> entry:ord.entrySet())
         lista.add(entry.getValue());
     return new TreeSet<String>(lista);
   }
- */
+
 /* Funções para todos os utilizadores*/
   /** Função que devolve todos os imoveis de um dado tipo e até um dado preço
 
@@ -227,7 +228,7 @@ public class Imoobiliaria implements Serializable{
   /** Função que devolve todos os imoveis habitaveis até um dado preço
 
   @param preco preço máximo dos imóveis
-  @return lista dos imóveis habitaveis
+  @return lista dos imóveis habitaveis*/
   public List<Habitavel> getHabitaveis (int preco){
     ArrayList<Habitavel> lista = new ArrayList<Habitavel>();
     Consulta consulta = new Consulta(utilizador.getEmail(),new GregorianCalendar());
@@ -237,15 +238,17 @@ public class Imoobiliaria implements Serializable{
         lista.add((Habitavel)entry.getValue());
     }
     return lista.stream().map(i->{return i.clone();}).collect(Collectors.toList());
-  }*/
+  }
 
   /** Função que obtem o mapeamento entre todos os imóveis e o seu vendedor
 
-  @return Mapeamento dos imóveis
+  @return Mapeamento dos imóveis*/
   public Map<Imovel,Vendedor> getMapeamentoImoveis (){
     // percorrer todos os utilizadores
       // obter o portfolio
-  }*/
+    TreeMap<Imovel,Vendedor> aux = new TreeMap<Imovel,Vendedor>();
+    return aux;
+  }
 
   /** Funções para compradores registados */
 
@@ -262,20 +265,21 @@ public class Imoobiliaria implements Serializable{
   }*/
 
   /** Função que devolve um set com os favoritos do utilizador
-  @return Set com todos os imoveis favoritos
+  @return Set com todos os imoveis favoritos*/
   public Set<Imovel> getFavoritos ()
   throws SemAutorizacaoException{
-    TreeSet<Imovel> set = new TreeSet<Imovel>();
-    TreeMap<String,Imovel> favoritos = utilizador.getFavoritos();
-    Consulta consulta = new Consulta(utilizador.getEmail(),new GregorianCalendar());
-    if (utilizador == null)
+    if (!(utilizador instanceof Comprador))
       throw new SemAutorizacaoException("Inicie sessão.");
+    TreeSet<Imovel> set = new TreeSet<Imovel>();
+    Comprador c = (Comprador) utilizador;
+    TreeMap<String,Imovel> favoritos = (TreeMap<String,Imovel>) c.getFavoritos();
+    Consulta consulta = new Consulta(utilizador.getEmail(),new GregorianCalendar());
     for(Map.Entry<String,Imovel> entry:favoritos.entrySet()){
-      entry.getValue().consultas.add(consulta);
+      entry.getValue().getConsultas().add(consulta);
       set.add(entry.getValue());
     }
     return set;
-  }*/
+  }
 
   public void gravar() throws IOException{
     ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("imoobiliaria.data"));

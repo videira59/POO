@@ -6,5 +6,5 @@
  * @version (a version number or a date)
  */
 public interface Habitavel{
-  
+    public Habitavel clone();
 }

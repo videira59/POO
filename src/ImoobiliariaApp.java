@@ -1,8 +1,9 @@
- import java.io.IOException;
+ import java.io.*;
+ import java.util.*;
 public class ImoobiliariaApp {
   private ImoobiliariaApp () {}
   private static Imoobiliaria imo;
-  private static Menu menumain,menuvendedores,menucompradores,menusessao;
+  private static Menu menumain,menuvendedores,menucompradores,menuregistar,menuregistarImo;
 
   public static void main(String [] args){
     carregarMenus();
@@ -39,7 +40,7 @@ public class ImoobiliariaApp {
                             "Procurar Imóveis Habitaveis",
                             "Mapeamento Imoveis",
                             "Adicionar imovel a favoritos",
-                            "Lista de imoveis favoritos"
+                            "Lista de imoveis favoritos",
                             "Terminar Sessão"
     };
     String [] registar = {
@@ -52,7 +53,7 @@ public class ImoobiliariaApp {
                               "Loja",
                               "Loja Habitável",
                               "Apartamento"
-    }
+    };
     menumain = new Menu(principal);
     menuvendedores = new Menu(compradores);
     menucompradores = new Menu(vendedores);
@@ -72,7 +73,7 @@ public class ImoobiliariaApp {
                 break;
         case 4: procImoHab();
                 break;
-        case 5; mapImo();
+        case 5: mapImo();
       }
     } while (menumain.getOpcao()!= 0);
   }
@@ -141,6 +142,7 @@ public class ImoobiliariaApp {
     Scanner input = new Scanner(System.in);
     String email,password;
 
+
     System.out.println("Email: ");
     email = input.nextLine();
 
@@ -148,16 +150,17 @@ public class ImoobiliariaApp {
     password = input.nextLine();
 
     try{
-      imo.registarUtilizador(u);
+      imo.iniciaSessao(email,password);
     }
-    catch (UtilizadorExistenteException)
+    catch (SemAutorizacaoException e){
       System.out.println(e.getMessage());
-    finally
-      intput.close();
-
+    }
+    finally{
+      input.close();
+    }
     switch(imo.getTipoUtilizador()){
-      case 1: executaMenuComprador(); break;
-      case 2: executaMenuVendedor(); break;
+      case 1: imprimeMenuCompradores(); break;
+      case 2: imprimeMenuVendedores(); break;
     }
   }
 
@@ -214,10 +217,10 @@ public class ImoobiliariaApp {
     Scanner input = new Scanner(System.in);
     ArrayList<Imovel> lista;
     System.out.println("Insira o tipo do Imóvel: ");
-    tipo = input.nextLine;
+    tipo = input.nextLine();
 
     preco = lerInt("Insira o preço máximo:");
-    lista = imo.getImovel(tipo,preco);
+    lista = (ArrayList<Imovel>) imo.getImovel(tipo,preco);
     for(Imovel im : lista)
       System.out.println(im.toString());
   }
@@ -226,13 +229,13 @@ public class ImoobiliariaApp {
     int preco;
     ArrayList<Habitavel> lista;
     preco = lerInt("Insira o preço máximo: ");
-    lista = imo.getHabitaveis(preco);
+    lista = (ArrayList<Habitavel>) imo.getHabitaveis(preco);
     for(Habitavel im: lista)
       System.out.println(im.toString());
   }
 
   private static void mapImo(){
-      Set<Map.Entry<Imovel,Vendedor>> map = imo.getMapeamentoImoveis();
+      Set<Map.Entry<Imovel,Vendedor>> map = imo.getMapeamentoImoveis().entrySet();
 
       for (Map.Entry<Imovel,Vendedor> entry:map){
         System.out.println(entry.getValue().toString());
@@ -261,24 +264,83 @@ public class ImoobiliariaApp {
     }
     catch (ImovelExisteException|SemAutorizacaoException e){
       System.out.println(e.getMessage());
+      regiImo();
     }
   }
 
   private static void lastConsultas(){
-    System.out.println("Ainda não implementado!!!");
+    try {
+      ArrayList<Consulta> consultas = (ArrayList<Consulta>) imo.getConsulta();
+
+      for(Consulta cons : consultas)
+        System.out.println(cons.toString());
+    }
+    catch(SemAutorizacaoException e){
+      System.out.println(e.getMessage());
+    }
   }
 
   private static void maisConsultas(){
-    System.out.println("Ainda não implementado!!!");
+    Scanner input = new Scanner(System.in);
+    Set<String> lista;
+    int n;
+    System.out.println("Insira o número de imoveis que pretende verificar as consultas: ");
+    n = input.nextInt();
+    lista = imo.getTopImoveis(n);
+    for (String s : lista)
+      System.out.println(s);
   }
 
   private static void estadoImo(){
-    System.out.println("Ainda não implementado!!!");
+    Scanner input = new Scanner(System.in);
+    String idImovel,estado;
+
+    System.out.println("Insira o id do imovel que pretende alterar: ");
+    idImovel = input.nextLine();
+
+    System.out.println("Insira o estado do imovel(Venda/Vendido)");
+    estado = input.nextLine();
+    try{
+      setEstado(idImovel,estado);
+    }
+    catch(ImovelInexistenteException|SemAutorizacaoException|EstadoInvalidoException e){
+      System.out.println(e.getMessage());
+    }
+    finally{
+      input.close();
+    }
   }
 
   private static void addImoFav(){
-    System.out.println("Ainda não implementado!!!");
+    Scanner input = new Scanner(System.in);
+    String idImovel;
+
+    System.out.println("Insira o id do imovel: ");
+    idImovel = input.nextLine();
+
+    try{
+      setFavoritos(idImovel);
+    }
+    catch(ImovelInexistenteException|SemAutorizacaoException e){
+      System.out.println(e.getMessage());
+    }
+    finally{
+      input.close();
+    }
   }
+
+  private static void listFav(){
+    TreeSet<Imovel> lista;
+    try{
+      lista = imo.getFavoritos();
+    }catch(SemAutorizacaoException e){
+      System.out.println(e.getMessage());
+    }
+    for(Imovel imo : lista){
+      System.out.println(imo.toString());
+    }
+  }
+
   private static Imovel addMoradia(){
     Scanner input = new Scanner(System.in);
     double areaT,areaI,areaE;
@@ -344,7 +406,7 @@ public class ImoobiliariaApp {
     boolean garagem;
     ArrayList<Consulta> consultas = new ArrayList<>();
 
-    System.out.println ("Insira a rua:")
+    System.out.println ("Insira a rua:");
     rua = input.nextLine();
 
     do{
@@ -413,10 +475,15 @@ public class ImoobiliariaApp {
     tipoNegocio = nextLine();
 
     System.out.println("Insira o tipo da habitação (Simples/Duplex/Triplex): ");
-  }
+    tipo = nextLine();
 
-  private static void listFav(){
-    System.out.println("Ainda não implementado!!!");
+    areaT = lerDouble("Insira a area total: ");
+    precoP = lerInt("Insira o preço do ímovel:  ");
+    precoM = lerInt("Insira o preço minimo do ímovel: ");
+    porta = lerInt("Insira o número da porta: ");
+    quartos = lerInt("Insira o número de quartos: ");
+    wcApartamento = lerInt("Insira o número de casas de banho: ");
+    andar = lerInt("Insira o andar: ");
   }
 
   private static double lerDouble(String msg){
