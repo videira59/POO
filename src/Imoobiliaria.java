@@ -253,16 +253,19 @@ public class Imoobiliaria implements Serializable{
   /** Funções para compradores registados */
 
   /** Função que define um dado imovel como favoritos
-  @param idImovel Id do imóvel a ser adicionado aos favoritos
+  @param idImovel Id do imóvel a ser adicionado aos favoritos*/
   public void setFavoritos(String idImovel)
   throws ImovelInexistenteException, SemAutorizacaoException{
+    Comprador c = (Comprador) utilizador;
     Imovel u = imoveis.get(idImovel);
     if (utilizador == null)
       throw new SemAutorizacaoException("Inicie sessão.");
+    if (! (utilizador instanceof Comprador))
+      throw new SemAutorizacaoException("Só possivel no menu de comprador!");
     if (u == null)
       throw new ImovelInexistenteException("Imovel não existe");
-    utilizador.getFavoritos().put(idImovel,u);
-  }*/
+    c.getFavoritos().put(idImovel,u);
+  }
 
   /** Função que devolve um set com os favoritos do utilizador
   @return Set com todos os imoveis favoritos*/

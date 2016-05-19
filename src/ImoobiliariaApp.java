@@ -301,7 +301,7 @@ public class ImoobiliariaApp {
     System.out.println("Insira o estado do imovel(Venda/Vendido)");
     estado = input.nextLine();
     try{
-      setEstado(idImovel,estado);
+      imo.setEstado(idImovel,estado);
     }
     catch(ImovelInexistenteException|SemAutorizacaoException|EstadoInvalidoException e){
       System.out.println(e.getMessage());
@@ -319,7 +319,7 @@ public class ImoobiliariaApp {
     idImovel = input.nextLine();
 
     try{
-      setFavoritos(idImovel);
+      imo.setFavoritos(idImovel);
     }
     catch(ImovelInexistenteException|SemAutorizacaoException e){
       System.out.println(e.getMessage());
@@ -330,14 +330,14 @@ public class ImoobiliariaApp {
   }
 
   private static void listFav(){
-    TreeSet<Imovel> lista;
     try{
-      lista = imo.getFavoritos();
-    }catch(SemAutorizacaoException e){
-      System.out.println(e.getMessage());
+      TreeSet<Imovel> lista = (TreeSet<Imovel>) imo.getFavoritos();
+      for(Imovel imo : lista){
+        System.out.println(imo.toString());
+      }
     }
-    for(Imovel imo : lista){
-      System.out.println(imo.toString());
+    catch(SemAutorizacaoException e){
+      System.out.println(e.getMessage());
     }
   }
 
@@ -371,7 +371,7 @@ public class ImoobiliariaApp {
   }
 
   private static Imovel addTerreno(){
-    Scanner input = new Scanner(System.input);
+    Scanner input = new Scanner(System.in);
     double areaT,canalizacao,eletricidade;
     boolean esgotos;
     String rua,estado,tipoConstrucao;
@@ -395,7 +395,7 @@ public class ImoobiliariaApp {
     esgotos = lerBoolean("O terreno tem acesso à rede de esgotos?(s/n): ");
     precoP = lerInt("Insira o preço do terreno: ");
     precoM = lerInt("Insira o preço minimo aceite pelo terreno: ");
-    return new Terreno(tipoConstrucao,canalizacao,eletricidade,esgotos,areaT,rua,pprecoP,precoM,consultas,estado);
+    return new Terreno(tipoConstrucao,canalizacao,eletricidade,esgotos,areaT,rua,precoP,precoM,consultas,estado);
   }
 
   private static Imovel addApartamento(){
@@ -447,7 +447,7 @@ public class ImoobiliariaApp {
     System.out.println("Insira o tipo de negócio: ");
     tipoNegocio= input.nextLine();
 
-    areat = lerDouble("Insira a area total da loja: ");
+    areaT = lerDouble("Insira a area total da loja: ");
     wc = lerBoolean("A loja tem casa de banho?(s/n): ");
     precoP = lerInt("Insira o preço do imovel: ");
     precoM = lerInt("Insira o preço minimo do imovel: ");
@@ -472,10 +472,10 @@ public class ImoobiliariaApp {
     } while (estado.compareTo("Venda")!=0 || estado.compareTo("Vendido") != 0);
 
     System.out.println("Insira o tipo de negócio da loja: ");
-    tipoNegocio = nextLine();
+    tipoNegocio = input.nextLine();
 
     System.out.println("Insira o tipo da habitação (Simples/Duplex/Triplex): ");
-    tipo = nextLine();
+    tipo = input.nextLine();
 
     areaT = lerDouble("Insira a area total: ");
     precoP = lerInt("Insira o preço do ímovel:  ");
@@ -484,6 +484,9 @@ public class ImoobiliariaApp {
     quartos = lerInt("Insira o número de quartos: ");
     wcApartamento = lerInt("Insira o número de casas de banho: ");
     andar = lerInt("Insira o andar: ");
+    wc = lerBoolean("A habitação tem wc?(s/n): ");
+    garagem = lerBoolean("A habitação tem acesso a garagem?(s/n): ");
+    return new LojaHabitavel (tipo,quartos,wcApartamento,porta,andar,garagem,wc,tipoNegocio,areaT,rua,precoP,precoM,consultas,estado);
   }
 
   private static double lerDouble(String msg){
@@ -522,7 +525,8 @@ public class ImoobiliariaApp {
   }
 
   private static boolean lerBoolean(String msg){
-    Scanner input = new Scanner(Sytem.in);
+    Scanner input = new Scanner(System.in);
+    String s;
     boolean r = true;
 
     s = input.nextLine();
