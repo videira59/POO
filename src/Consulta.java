@@ -1,6 +1,7 @@
 import java.util.GregorianCalendar;
+import java.io.Serializable;
 
-public class Consulta{
+public class Consulta implements Serializable{
 
   /** Email do utilizador que fez a consulta */
   private String email;

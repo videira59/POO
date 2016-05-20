@@ -55,8 +55,8 @@ public class ImoobiliariaApp {
                               "Apartamento"
     };
     menumain = new Menu(principal);
-    menuvendedores = new Menu(compradores);
-    menucompradores = new Menu(vendedores);
+    menuvendedores = new Menu(vendedores);
+    menucompradores = new Menu(compradores);
     menuregistar = new Menu(registar);
     menuregistarImo = new Menu(registarImo);
   }
@@ -216,7 +216,7 @@ public class ImoobiliariaApp {
     String tipo;
     Scanner input = new Scanner(System.in);
     ArrayList<Imovel> lista;
-    System.out.println("Insira o tipo do Imóvel: ");
+    System.out.println("Insira o tipo do Imóvel(Moradia/Apartamento/Loja/LojaHabitavel/Terreno): ");
     tipo = input.nextLine();
 
     preco = lerInt("Insira o preço máximo:");
@@ -351,10 +351,8 @@ public class ImoobiliariaApp {
     System.out.println("Insira a rua: ");
     rua = input.nextLine();
 
-    do{
-      System.out.println("Insira o estado do imovel(Venda/Vendido): ");
-      estado = input.nextLine();
-    } while (estado.compareTo("Venda")!=0 || estado.compareTo("Vendido") != 0);
+    System.out.println("Insira o estado do imovel(Venda/Vendido): ");
+    estado = input.nextLine();
 
     System.out.println("Insira o tipo: ");
     tipo = input.nextLine();
@@ -381,10 +379,8 @@ public class ImoobiliariaApp {
     System.out.println("Insira a rua: ");
     rua = input.nextLine();
 
-    do{
-      System.out.println("Insira o estado do imovel(Venda/Vendido): ");
-      estado = input.nextLine();
-    } while (estado.compareTo("Venda")!=0 || estado.compareTo("Vendido") != 0);
+    System.out.println("Insira o estado do imovel(Venda/Vendido): ");
+    estado = input.nextLine();
 
     System.out.println("Insira o tipo de construção possivel: ");
     tipoConstrucao = input.nextLine();
@@ -409,10 +405,8 @@ public class ImoobiliariaApp {
     System.out.println ("Insira a rua:");
     rua = input.nextLine();
 
-    do{
-      System.out.println("Insira o estado do imovel(Venda/Vendido): ");
-      estado = input.nextLine();
-    } while (estado.compareTo("Venda")!=0 || estado.compareTo("Vendido") != 0);
+    System.out.println("Insira o estado do imovel(Venda/Vendido): ");
+    estado = input.nextLine();
 
     System.out.println("Insira o tipo do apartamento(Simples/Duplex/Triplex): ");
     tipo = input.nextLine();
@@ -439,10 +433,8 @@ public class ImoobiliariaApp {
     System.out.println("Insira a rua: ");
     rua = input.nextLine();
 
-    do{
-      System.out.println("Insira o estado do imovel(Venda/Vendido): ");
-      estado = input.nextLine();
-    } while (estado.compareTo("Venda")!=0 || estado.compareTo("Vendido") != 0);
+    System.out.println("Insira o estado(Venda/Vendido): ");
+    estado = input.nextLine();
 
     System.out.println("Insira o tipo de negócio: ");
     tipoNegocio= input.nextLine();
@@ -466,10 +458,8 @@ public class ImoobiliariaApp {
     System.out.println("Insira a rua: ");
     rua = input.nextLine();
 
-    do{
-      System.out.println("Insira o estado do imovel(Venda/Vendido): ");
-      estado = input.nextLine();
-    } while (estado.compareTo("Venda")!=0 || estado.compareTo("Vendido") != 0);
+    System.out.println("Insira o estado do imovel(Venda/Vendido): ");
+    estado = input.nextLine();
 
     System.out.println("Insira o tipo de negócio da loja: ");
     tipoNegocio = input.nextLine();

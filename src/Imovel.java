@@ -1,13 +1,14 @@
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.io.Serializable;
 /**
  * Write a description of class Imovel here.
  *
  * @author (your name)
  * @version (a version number or a date)
  */
-public abstract class Imovel{
+public abstract class Imovel implements Serializable{
     /** Area total do imovel a venda*/
     private double areaT;
 

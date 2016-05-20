@@ -2,8 +2,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.InputMismatchException;
+import java.io.Serializable;
 
-public class Menu {
+public class Menu implements Serializable{
 
   private List<String> opcoes;
   private int op;

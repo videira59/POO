@@ -1,12 +1,11 @@
-
+import java.io.Serializable;
 /**
  * Write a description of class Utilizadores here.
  *
  * @author (your name)
  * @version (a version number or a date)
  */
-public abstract class Utilizador
-{
+public abstract class Utilizador implements Serializable{
     private String email;
     private String nome;
     private String password;

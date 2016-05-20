@@ -125,9 +125,9 @@ public class Imoobiliaria implements Serializable{
   throws SemAutorizacaoException{
     Utilizador u = this.utilizadores.get(email);
     if (u == null)
-      throw new SemAutorizacaoException("Utilizador nao existente");
+      throw new SemAutorizacaoException("Utilizador nao existente!");
     if (!u.getPassword().equals(password))
-      throw new SemAutorizacaoException("A password nao correspondente ao utilizador");
+      throw new SemAutorizacaoException("Password incorreta!");
     this.utilizador = this.utilizadores.get(email);
   }
 
@@ -146,10 +146,12 @@ public class Imoobiliaria implements Serializable{
   throws ImovelExisteException, SemAutorizacaoException{
     int tamanho;
     String idImovel;
+    if (!(utilizador instanceof Vendedor))
+      throw new SemAutorizacaoException("Funcionalidade apenas permitida como vendedor!");
     if (utilizador == null)
-      throw new SemAutorizacaoException("Inicie Sessão.");
+      throw new SemAutorizacaoException("Inicie Sessão!");
     if (imoveis.containsValue(im))
-      throw new ImovelExisteException("Imovel já existente");
+      throw new ImovelExisteException("Imovel já existente!");
     tamanho = imoveis.size();
     tamanho ++;
     idImovel = Integer.toString(tamanho);
@@ -165,6 +167,8 @@ public class Imoobiliaria implements Serializable{
     ArrayList<Consulta> lista = new ArrayList<Consulta>();
     if(utilizadores == null)
       throw new SemAutorizacaoException("Inicie Sessão.");
+    if (!(utilizador instanceof Vendedor))
+      throw new SemAutorizacaoException("Funcionalidade apenas permitida como vendedor!");
       // add todas as consultas a uma lista
     // guardar apenas 10 primeiras
     return lista;
@@ -177,14 +181,31 @@ public class Imoobiliaria implements Serializable{
   public void setEstado (String idImovel, String estado)
   throws ImovelInexistenteException,SemAutorizacaoException,EstadoInvalidoException{
     Imovel i = imoveis.get(idImovel);
+    String estadoImo = i.getEstado();
+    Vendedor v = (Vendedor) utilizador;
+    if (!(utilizador instanceof Vendedor))
+      throw new SemAutorizacaoException("Funcionalidade apenas permitida como vendedor");
     if (utilizador == null)
       throw new SemAutorizacaoException("Inicie sessão.");
     if (i == null)
       throw new ImovelInexistenteException("O imóvel não existe no sistema!");
     if ((estado.compareTo("Venda")) != 0)
-    if ((estado.compareTo("Vendido")) != 0)
-      throw new EstadoInvalidoException("O estado introduzido não é válido.");
-    i.setEstado(estado);
+      if ((estado.compareTo("Vendido")) != 0)
+        throw new EstadoInvalidoException("O estado introduzido não é válido.");
+    if (estadoImo.compareTo(estado) == 0)
+      if (estado.compareTo("Venda") == 0){
+        i.setEstado(estado);
+        v.getPortfolio().remove(idImovel);
+        v.getHistorico().put(idImovel,i);
+      }
+      else {
+        i.setEstado(estado);
+        v.getHistorico().remove(idImovel);
+        v.getPortfolio().put(idImovel,i);
+      }
+
+    // mudar para alterar o imovel de local se alterar o estado
+
   }
 
   /** Função que obtem o conjunto dos ids dos n imoveis mais consultados
@@ -246,7 +267,16 @@ public class Imoobiliaria implements Serializable{
   public Map<Imovel,Vendedor> getMapeamentoImoveis (){
     // percorrer todos os utilizadores
       // obter o portfolio
+          // guardar cada imovel no map
+    Vendedor v;
     TreeMap<Imovel,Vendedor> aux = new TreeMap<Imovel,Vendedor>();
+    for (Map.Entry<String,Utilizador> entry:utilizadores.entrySet()){
+      v = (Vendedor) entry.getValue();
+      if(entry.getValue() instanceof Vendedor){
+        for(Map.Entry<String,Imovel> entryy: v.getPortfolio().entrySet())
+          aux.put(entryy.getValue(),v);
+      }
+    }
     return aux;
   }
 
@@ -260,7 +290,7 @@ public class Imoobiliaria implements Serializable{
     Imovel u = imoveis.get(idImovel);
     if (utilizador == null)
       throw new SemAutorizacaoException("Inicie sessão.");
-    if (! (utilizador instanceof Comprador))
+    if (!(utilizador instanceof Comprador))
       throw new SemAutorizacaoException("Só possivel no menu de comprador!");
     if (u == null)
       throw new ImovelInexistenteException("Imovel não existe");
