@@ -271,8 +271,9 @@ public class Imoobiliaria implements Serializable{
     Vendedor v;
     TreeMap<Imovel,Vendedor> aux = new TreeMap<Imovel,Vendedor>();
     for (Map.Entry<String,Utilizador> entry:utilizadores.entrySet()){
-      v = (Vendedor) entry.getValue();
+
       if(entry.getValue() instanceof Vendedor){
+                v = (Vendedor) entry.getValue();
         for(Map.Entry<String,Imovel> entryy: v.getPortfolio().entrySet())
           aux.put(entryy.getValue(),v);
       }
