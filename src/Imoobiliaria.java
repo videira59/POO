@@ -111,7 +111,7 @@ public class Imoobiliaria implements Serializable{
   public void registarUtilizador (Utilizador utilizador)
   throws UtilizadorExistenteException{
     String email = utilizador.getEmail();
-    if (utilizadores.containsValue(utilizador)) {
+    if (!utilizadores.containsValue(utilizador)) {
       throw new UtilizadorExistenteException("Utilizador já existente!");
     }
     utilizadores.put(email,utilizador);
@@ -150,7 +150,7 @@ public class Imoobiliaria implements Serializable{
       throw new SemAutorizacaoException("Funcionalidade apenas permitida como vendedor!");
     if (utilizador == null)
       throw new SemAutorizacaoException("Inicie Sessão!");
-    if (imoveis.containsValue(im))
+    if (!imoveis.containsValue(im))
       throw new ImovelExisteException("Imovel já existente!");
     tamanho = imoveis.size();
     tamanho ++;
@@ -271,8 +271,8 @@ public class Imoobiliaria implements Serializable{
     Vendedor v;
     TreeMap<Imovel,Vendedor> aux = new TreeMap<Imovel,Vendedor>();
     for (Map.Entry<String,Utilizador> entry:utilizadores.entrySet()){
-      v = (Vendedor) entry.getValue();
       if(entry.getValue() instanceof Vendedor){
+        v = (Vendedor) entry.getValue();
         for(Map.Entry<String,Imovel> entryy: v.getPortfolio().entrySet())
           aux.put(entryy.getValue(),v);
       }
