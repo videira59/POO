@@ -28,8 +28,8 @@ public class Terreno extends Imovel
 		this.esgotos = t.getEsgotos();
 	}
 
-	public Terreno (String tipoConstrucao,double canalizacao,double eletricidade,boolean esgotos,double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado){
-		super (areaT,rua,precoP,precoM,consultas,estado);
+	public Terreno (String tipoConstrucao,double canalizacao,double eletricidade,boolean esgotos,double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado,String id){
+		super (areaT,rua,precoP,precoM,consultas,estado,id);
 		this.tipoConstrucao = tipoConstrucao;
 		this.canalizacao = canalizacao;
 		this.eletricidade = eletricidade;

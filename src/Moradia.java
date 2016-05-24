@@ -24,8 +24,8 @@ public class Moradia extends Imovel implements Habitavel{
 		 porta = 0;
 	 }
 
-	 public Moradia (String tipo,double areaI,double areaE,int quartos,int wc, int porta,double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado){
-		 super (areaT,rua,precoP,precoM,consultas,estado);
+	 public Moradia (String tipo,double areaI,double areaE,int quartos,int wc, int porta,double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado,String id){
+		 super (areaT,rua,precoP,precoM,consultas,estado,id);
 		 this.tipo = tipo;
 		 this.areaI = areaI;
 		 this.areaE = areaE;
@@ -35,6 +35,7 @@ public class Moradia extends Imovel implements Habitavel{
 	 }
 
 	 public Moradia (Moradia m){
+     super(m);
 		 this.tipo = m.getTipo();
 		 this.areaI = m.getAreaImplantacao();
 		 this.areaE = m.getAreaEnvolvente();

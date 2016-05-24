@@ -27,12 +27,16 @@ public abstract class Imovel implements Serializable{
     /** Estado do imóvel (venda ou vendido) */
     private String estado;
 
+    /** Id do imovel */
+    private String id;
+
 
     public Imovel () {
         areaT = precoP = precoP =  0;
         rua = "n/a";
         consultas = new ArrayList<Consulta> ();
         estado = "n/a";
+        id = "n/a";
     }
 
     public Imovel (Imovel i){
@@ -42,15 +46,17 @@ public abstract class Imovel implements Serializable{
         this.precoM = i.getPrecoM ();
         this.consultas = i.getConsultas().stream().map(a-> {return a.clone();}).collect(Collectors.toList());
         this.estado = i.getEstado();
+        this.id = i.getId();
     }
 
-    public Imovel (double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado){
+    public Imovel (double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado,String id){
         this.areaT = areaT;
         this.rua = rua;
         this.precoP = precoP;
         this.precoM = precoM;
         this.consultas = consultas.stream().map(i-> {return i.clone();}).collect(Collectors.toList());
         this.estado = estado;
+        this.id = id;
     }
 
     public double getAreaT () {
@@ -100,6 +106,15 @@ public abstract class Imovel implements Serializable{
     public void setEstado(String estado){
       this.estado = estado;
     }
+
+    public String getId(){
+      return id;
+    }
+
+    public void setId(String id){
+      this.id = id;
+    }
+
     public abstract Imovel clone ();
 
     public boolean equals (Object obj){
@@ -114,7 +129,8 @@ public abstract class Imovel implements Serializable{
       && i.getRua().equals(rua)
       && i.getPrecoP() == precoP
       && i.getPrecoM() == precoM
-      && i.getConsultas().equals(consultas);
+      && i.getConsultas().equals(consultas)
+      && i.getId().equals(id);
     }
 
     public String toString (){
@@ -122,6 +138,7 @@ public abstract class Imovel implements Serializable{
       sb.append("Rua:(").append(rua).append(")\n");
       sb.append("A area total do imóvel é:(").append(areaT).append(")\n");
       sb.append("O preço pedido pelo imóvel é:(").append(precoP).append(")\n");
+      sb.append("O id do Imovel é:").append(id).append(")\n");
       //verificar se temos de add a preçoM
       return sb.toString();
     }

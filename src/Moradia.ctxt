@@ -1,8 +1,8 @@
 #BlueJ class context
 comment0.params=
 comment0.target=Moradia()
-comment1.params=tipo\ areaI\ areaE\ quartos\ wc\ porta\ areaT\ rua\ precoP\ precoM\ consultas\ estado
-comment1.target=Moradia(java.lang.String,\ double,\ double,\ int,\ int,\ int,\ double,\ java.lang.String,\ int,\ int,\ java.util.List,\ java.lang.String)
+comment1.params=tipo\ areaI\ areaE\ quartos\ wc\ porta\ areaT\ rua\ precoP\ precoM\ consultas\ estado\ id
+comment1.target=Moradia(java.lang.String,\ double,\ double,\ int,\ int,\ int,\ double,\ java.lang.String,\ int,\ int,\ java.util.List,\ java.lang.String,\ java.lang.String)
 comment10.params=quartos
 comment10.target=void\ setQuartos(int)
 comment11.params=

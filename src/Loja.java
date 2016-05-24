@@ -30,8 +30,8 @@ public class Loja extends Imovel
        this.porta = l.getNumPorta ();
    }
 
-   public Loja (boolean wc,String tipoNegocio,int porta,double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado){
-         super (areaT,rua,precoP,precoM,consultas,estado);
+   public Loja (boolean wc,String tipoNegocio,int porta,double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado,String id){
+         super (areaT,rua,precoP,precoM,consultas,estado,id);
          this.wc = wc;
          this.tipoNegocio = tipoNegocio;
          this.porta = porta;

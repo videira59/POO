@@ -28,8 +28,8 @@ public class LojaHabitavel extends Loja implements Habitavel{
       this.garagem = lh.existeGaragem();
     }
 
-    public LojaHabitavel(String tipo,int quartos, int wcApartamento, int porta, int andar, boolean garagem, boolean wc,String tipoNegocio,double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado){
-      super (wc,tipoNegocio,porta,areaT,rua,precoP,precoM,consultas,estado);
+    public LojaHabitavel(String tipo,int quartos, int wcApartamento, int porta, int andar, boolean garagem, boolean wc,String tipoNegocio,double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado,String id){
+      super (wc,tipoNegocio,porta,areaT,rua,precoP,precoM,consultas,estado,id);
       this.tipo = tipo;
       this.quartos = quartos;
       this.wcApartamento = wcApartamento;

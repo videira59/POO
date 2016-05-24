@@ -1,9 +1,8 @@
 import java.util.Comparator;
-public class ComparadorConsultas implements Comparator<Imovel>{
-  public int compare(Imovel imo1,Imovel imo2){
-    int a,b;
-    a = imo1.getConsultas().size();
-    b = imo2.getConsultas().size();
-    return a - b;
+import java.io.Serializable;
+
+public class ComparadorConsultas implements Comparator<Consulta>,Serializable{
+  public int compare(Consulta a,Consulta b){
+    return a.getData().compareTo(b.getData());
   }
 }

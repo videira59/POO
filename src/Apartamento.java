@@ -24,8 +24,8 @@ public class Apartamento extends Imovel implements Habitavel{
 	   garagem = false;
    }
 
-   public Apartamento (String tipo,int quartos,int wc,int porta,int andar,boolean garagem, double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado){
-	   super (areaT,rua,precoP,precoM,consultas,estado);
+   public Apartamento (String tipo,int quartos,int wc,int porta,int andar,boolean garagem, double areaT,String rua,int precoP,int precoM,List<Consulta> consultas,String estado,String id){
+	   super (areaT,rua,precoP,precoM,consultas,estado,id);
 	   this.tipo = tipo;
 	   this.quartos = quartos;
 	   this.wc = wc;

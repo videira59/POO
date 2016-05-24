@@ -111,7 +111,7 @@ public class Imoobiliaria implements Serializable{
   public void registarUtilizador (Utilizador utilizador)
   throws UtilizadorExistenteException{
     String email = utilizador.getEmail();
-    if (!utilizadores.containsValue(utilizador)) {
+    if (utilizadores.containsKey(email)) {
       throw new UtilizadorExistenteException("Utilizador já existente!");
     }
     utilizadores.put(email,utilizador);
@@ -146,31 +146,39 @@ public class Imoobiliaria implements Serializable{
   throws ImovelExisteException, SemAutorizacaoException{
     int tamanho;
     String idImovel;
-    if (!(utilizador instanceof Vendedor))
-      throw new SemAutorizacaoException("Funcionalidade apenas permitida como vendedor!");
+    idImovel = im.getId();
     if (utilizador == null)
       throw new SemAutorizacaoException("Inicie Sessão!");
-    if (!imoveis.containsValue(im))
+    if (!(utilizador instanceof Vendedor))
+      throw new SemAutorizacaoException("Só possivel quando iniciado como Vendedor!");
+    if (imoveis.containsKey(idImovel))
       throw new ImovelExisteException("Imovel já existente!");
-    tamanho = imoveis.size();
-    tamanho ++;
-    idImovel = Integer.toString(tamanho);
-    imoveis.put(idImovel,im); // add o comparador
-    // add imovel ao portfolio do vendedor;
+
+    Vendedor v = (Vendedor) utilizador;
+    imoveis.put(idImovel,im);
+    v.getPortfolio().put(idImovel,im);
   }
 
   /** Função que devolve ao utilizador a lista das 10 ultimas consultas dos imoveis que este tem para venda
 
   @return Lista das consultas */
-  public List<Consulta> getConsulta ()
+  public List<Consulta> getConsultas ()
   throws SemAutorizacaoException{
+    Vendedor v = (Vendedor) utilizador;
+    TreeSet<Consulta> aux = new TreeSet<Consulta>(new ComparadorConsultas());
     ArrayList<Consulta> lista = new ArrayList<Consulta>();
     if(utilizadores == null)
       throw new SemAutorizacaoException("Inicie Sessão.");
     if (!(utilizador instanceof Vendedor))
-      throw new SemAutorizacaoException("Funcionalidade apenas permitida como vendedor!");
-      // add todas as consultas a uma lista
-    // guardar apenas 10 primeiras
+      throw new SemAutorizacaoException("Só possivel quando iniciado como Vendedor!");
+
+    for (Map.Entry<String,Imovel> entry: v.getPortfolio().entrySet()){
+      aux.addAll(entry.getValue().getConsultas());
+    }
+    Iterator itr = aux.iterator();
+    for (int i = 0;itr.hasNext() && i<10;i++){
+      lista.add((Consulta) itr.next());
+    }
     return lista;
   }
 
@@ -183,10 +191,10 @@ public class Imoobiliaria implements Serializable{
     Imovel i = imoveis.get(idImovel);
     String estadoImo = i.getEstado();
     Vendedor v = (Vendedor) utilizador;
-    if (!(utilizador instanceof Vendedor))
-      throw new SemAutorizacaoException("Funcionalidade apenas permitida como vendedor");
     if (utilizador == null)
       throw new SemAutorizacaoException("Inicie sessão.");
+    if (!(utilizador instanceof Vendedor))
+      throw new SemAutorizacaoException("Só possivel quando iniciado como Vendedor!");
     if (i == null)
       throw new ImovelInexistenteException("O imóvel não existe no sistema!");
     if ((estado.compareTo("Venda")) != 0)
@@ -217,7 +225,7 @@ public class Imoobiliaria implements Serializable{
     Vendedor v = (Vendedor) utilizador;
     TreeSet<String> lista = new TreeSet<String>();
     TreeMap<String,Imovel> imoveisUti = new TreeMap<String,Imovel>(v.getPortfolio());
-    TreeMap<Imovel,String> ord = new TreeMap<Imovel,String>(new ComparadorConsultas());
+    TreeMap<Imovel,String> ord = new TreeMap<Imovel,String>(new ComparadorConsultasImovel());
     String id,idImovel;
     for(Map.Entry<String,Imovel> entry: imoveisUti.entrySet()){
       ord.put(entry.getValue(),entry.getKey());
@@ -254,9 +262,10 @@ public class Imoobiliaria implements Serializable{
     ArrayList<Habitavel> lista = new ArrayList<Habitavel>();
     Consulta consulta = new Consulta(utilizador.getEmail(),new GregorianCalendar());
     for (Map.Entry<String,Imovel> entry:imoveis.entrySet()){
-      if (entry.getValue() instanceof Habitavel && entry.getValue().getPrecoP()>= preco)
+      if (((entry.getValue()) instanceof Habitavel) && (entry.getValue().getPrecoP()>= preco)){
         entry.getValue().getConsultas().add(consulta);
         lista.add((Habitavel)entry.getValue());
+      }
     }
     return lista.stream().map(i->{return i.clone();}).collect(Collectors.toList());
   }
@@ -269,12 +278,15 @@ public class Imoobiliaria implements Serializable{
       // obter o portfolio
           // guardar cada imovel no map
     Vendedor v;
+    Consulta consulta = new Consulta (utilizador.getEmail(),new GregorianCalendar());
     TreeMap<Imovel,Vendedor> aux = new TreeMap<Imovel,Vendedor>();
     for (Map.Entry<String,Utilizador> entry:utilizadores.entrySet()){
       if(entry.getValue() instanceof Vendedor){
         v = (Vendedor) entry.getValue();
-        for(Map.Entry<String,Imovel> entryy: v.getPortfolio().entrySet())
+        for(Map.Entry<String,Imovel> entryy: v.getPortfolio().entrySet()){
           aux.put(entryy.getValue(),v);
+          entryy.getValue().getConsultas().add(consulta);
+        }
       }
     }
     return aux;
@@ -284,14 +296,14 @@ public class Imoobiliaria implements Serializable{
 
   /** Função que define um dado imovel como favoritos
   @param idImovel Id do imóvel a ser adicionado aos favoritos*/
-  public void setFavoritos(String idImovel)
+  public void setFavorito(String idImovel)
   throws ImovelInexistenteException, SemAutorizacaoException{
     Comprador c = (Comprador) utilizador;
     Imovel u = imoveis.get(idImovel);
     if (utilizador == null)
       throw new SemAutorizacaoException("Inicie sessão.");
     if (!(utilizador instanceof Comprador))
-      throw new SemAutorizacaoException("Só possivel no menu de comprador!");
+      throw new SemAutorizacaoException("Só possivel quando iniciado como Comprador!");
     if (u == null)
       throw new ImovelInexistenteException("Imovel não existe");
     c.getFavoritos().put(idImovel,u);
@@ -301,8 +313,10 @@ public class Imoobiliaria implements Serializable{
   @return Set com todos os imoveis favoritos*/
   public Set<Imovel> getFavoritos ()
   throws SemAutorizacaoException{
+    if (utilizador == null)
+      throw new SemAutorizacaoException("Inicie Sessão.");
     if (!(utilizador instanceof Comprador))
-      throw new SemAutorizacaoException("Inicie sessão.");
+      throw new SemAutorizacaoException("Só possivel quando iniciado como Comprador!");
     TreeSet<Imovel> set = new TreeSet<Imovel>();
     Comprador c = (Comprador) utilizador;
     TreeMap<String,Imovel> favoritos = (TreeMap<String,Imovel>) c.getFavoritos();
